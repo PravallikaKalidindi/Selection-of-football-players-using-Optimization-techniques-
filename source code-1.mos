@@ -1,0 +1,68 @@
+!@encoding CP1252
+model CoolName
+uses "mmxprs"; !gain access to the Xpress-Optimizer solver
+
+!sample declarations section
+declarations
+	N = 1..100
+	Name: array(N) of string
+	Position: array(N) of string
+	Salary: array(N) of integer
+	ProjectedScore: array(N) of integer
+	x: array(N) of mpvar
+	num_dst=0
+	num_QB=0
+	num_RB=0
+	num_TE=0
+	num_WR=0
+end-declarations
+ forall(i in N) do
+	x(i) is_binary
+ end-do
+ 
+initializations from 'PlayerData.txt'
+	Name
+	Position
+	Salary
+	ProjectedScore
+end-initializations
+
+Objective:= (sum(i in N) x(i) * ProjectedScore(i))
+
+sum(i in N) Salary(i)*x(i) <= 50000
+sum(i in N) x(i) =6
+ 
+ x(3)+ x(5)+ x(6)+ x(8)+ x(9)+ x(12)+
+x(14)+ x(20)+ x(23)+ x(26)+ x(29)+ x(32)+
+x(35)+ x(38)+ x(41)+ x(46)+ x(50)+ x(54)+
+x(69)+ x(72)+ x(73)+ x(74)+ x(75)+ x(77)+
+x(78)+ x(79)+ x(80)+ x(81)+ x(83)+ x(84)+
+x(88)+ x(91)+ x(95)+ x(96)>=1
+
+x(13)+ x(37)+ x(56)+ x(76)+ x(82)+ x(99)+
+x(100)>=1 
+
+x(1)+ x(2)+ x(4)+ x(7)+ x(11)+ x(15)+
+x(18)+ x(19)+ x(22)+ x(24)+ x(27)+ x(30)+
+x(40)+ x(43)+ x(49)+ x(52)+ x(53)+ x(59)+
+x(60)+ x(62)+ x(63)+ x(64)+ x(68)+ x(85)+
+x(87)+ x(89)+ x(90)+ x(92)+ x(93)+ x(94)+
+x(98)>=1 
+
+x(10)+ x(16)+ x(17)+ x(21)+ x(25)+ x(28)+
+x(31)+ x(33)+ x(34)+ x(36)+ x(39)+ x(42)+
+x(44)+ x(45)+ x(47)+ x(48)+ x(51)+ x(55)+
+x(57)+ x(58)+ x(61)+ x(65)+ x(66)+ x(67)+
+x(70)>=1 
+
+x(71)+ x(86)+ x(97)>=1
+
+ maximize(Objective) 
+  
+ writeln("Total satisfaction score: ", getobjval)
+  forall(l in N) do
+  if(getsol(x(l))>0) then
+   	writeln(l, " ",getsol(x(l))," position is ",Position(l))
+   end-if   
+   end-do
+end-model
